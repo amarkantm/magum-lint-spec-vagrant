@@ -37,6 +37,33 @@
 #
 class common {
 
+# Ensure existence of /etc/password file
+
+  file { '/etc/passwd':
+    ensure => 'file',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+}
+
+# create user
+
+  user { 'centos':
+      ensure   => 'present',
+      comment  => 'centos user',
+      gid      => '501',
+      home     => '/home/centos',
+      shell    => '/bin/bash',
+      uid      => '501',
+      password => sha1('config'),
+      require  => File['/etc/passwd'],
+    }
+
+  group { 'centos':
+        ensure   => 'present',
+	gid      => '501',
+}
+
 # create a directory      
   file { '/var/rsi':
     ensure => 'directory',
@@ -44,4 +71,5 @@ class common {
     group  => 'centos',
     mode   => '0750',
   }
+
 }
